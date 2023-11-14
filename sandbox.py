@@ -6,6 +6,7 @@ import logging.config
 from dotenv import load_dotenv
 from github import Github
 import src.github_utils as gu
+import src.ai_utils as au
 
 logging.config.fileConfig("config/logs/local.conf")
 logger = logging.getLogger(__name__)
@@ -18,6 +19,8 @@ if __name__ == "__main__":
         "-r", "--repo", default="hyeniii/auto-readme", help="Specify github repository to create a readme on"
     )
     args = parser.parse_args()
+    repo_name = args.repo
+    logger.info("Repository name: %s", repo_name)
 
     # Load environment variables from .env file
     load_dotenv()
@@ -30,12 +33,70 @@ if __name__ == "__main__":
         exit(1)  # Exit the program if tokens are not set
 
     try:
+        # --- Extract Github Repo Content--- 
         g = Github(GITHUB_API_TOKEN)
-        repo = g.get_repo("public-apis/public-apis")
-        print(repo.get_topics())
-        logging.info("Recetriving data from %s", repo.full_name)
+        repo = g.get_repo(repo_name)
+        logger.debug(repo.get_topics())
+        logger.info("Recetriving data from %s", repo.full_name)
         contents = repo.get_contents("")
         all_files = gu.get_all_files(repo)
-        print(all_files)
+        logger.debug(all_files)
+
+        # --- Decode files ---
+        logger.info("Decoding files in repo.")
+        decoded_files = gu.decode_files(all_files)
+        logger.info("Files decoded")
+        decoded_files_flatten = gu.flatten(decoded_files)
+        logger.info("Files flattened")
+
+        # --- Create README file ---
+        logger.info("Creating AI_README.md file.")
+        with open("AI_README.md","w") as f:
+            f.write(f"# {repo_name} \n\n")
+        logger.info("AI_README.md file successfully created.")
+
+        # --- Custom loader ---
+        custom_loader = au.CustomCodeLoader(decoded_files_flatten)
+        logger.info("Custom loader for files created.")
+        documents = list(custom_loader.load())
+        logger.info("Repo files loaded.")
+
+        # --- Get repo overview --- 
+        answer = au.get_repo_overview(documents, OPEN_API_TOKEN)
+        logger.info("Repo overview extracted.")
+
+        with open("AI_README.md","a") as f:
+            f.write("## Overview\n\n")
+            f.write(f"{answer}\n\n")
+        logger.info("Repo overview written to readme file.") 
+        
+        # --- Get repo structure --- 
+        answer = au.get_repo_structure(documents, OPEN_API_TOKEN)
+        logger.info("Repo structure extracted.")
+
+        with open("AI_README.md","a") as f:
+            f.write("## Repo Structure\n\n")
+            f.write(f"{answer}\n\n")
+        logger.info("Repo structure written to readme file.") 
+
+        # --- Getting started instructions --- 
+        answer = au.getting_started(repo_name, documents, OPEN_API_TOKEN)
+        logger.info("Repo instructions extracted.")
+
+        with open("AI_README.md","a") as f:
+            f.write("## Getting started\n\n")
+            f.write(f"{answer}\n\n")
+        logger.info("Getting stated section written to readme file.")
+
+        # --- Summary of files --- 
+        answer = au.get_file_summaries(documents, OPEN_API_TOKEN)
+        logger.info("Summary of files in repo extracted.")
+
+        with open("AI_README.md","a") as f:
+            f.write("## File description \n\n")
+            for a in answer: 
+                f.write(f"{a}\n\n")
+        logger.info("File description section writen to readme file.")
+
     except Exception as e:
         logging.error("Error occured in retrieving repo content", e)
