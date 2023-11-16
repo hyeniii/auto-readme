@@ -75,11 +75,17 @@ def get_repo_overview(documents, openai_api_key):
     str: A paragraph summarizing the purpose and contents of the repository.
     """
    
+    #template = """
+    #You are a helpful assistant who generates summarizations of code to build a README file. 
+    #Give me a one paragraph with a brief overview of what is the repo for. 
+    #"""
+    #human_template = "Repo content: {documents}"
     template = """
-    You are a helpful assistant who generates summarizations of code to build a README file. 
-    Give me a one paragraph with a brief overview of what is the repo for. 
+    You are a helpful assistant who helps to build a README file. You will receive a list containing
+    the summaries of each file on the repository. Using this information, summarize the general purpose
+    of the project and the tools used in one paragraph.  
     """
-    human_template = "Repo content: {documents}"
+    human_template = "File summaries: {documents}"
 
     chat_prompt = ChatPromptTemplate.from_messages([
         ("system", template),
@@ -139,10 +145,15 @@ def getting_started(repo_name, documents, openai_api_key):
     str: Step-by-step instructions for getting started with the repository.
     """
 
+    #template = """
+    #You are a helpful assistant who helps built a README file for a Github repository. 
+    #Give me instructions on how to to get started. detailing the steps for cloning the repository 
+    #and the steps for installing dependencies. 
+    #"""
     template = """
     You are a helpful assistant who helps built a README file for a Github repository. 
-    Give me instructions on how to to get started. detailing the steps for cloning the repository 
-    and the steps for installing dependencies. 
+    Give me instructions on how to to get started. detailing the steps for cloning the repository, 
+    the steps for installing dependencies, and any special credentials needed. 
     """
 
     human_template = """
