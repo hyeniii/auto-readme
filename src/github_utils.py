@@ -1,6 +1,10 @@
 from github import Github
 from collections.abc import MutableMapping
 import base64
+import logging 
+import re
+
+logger = logging.getLogger(__name__)
 
 def get_all_files(repo, path=""):
     """
@@ -23,6 +27,7 @@ def get_all_files(repo, path=""):
             files[content.path] = get_all_files(repo, content.path)
         else:
             files[content.path] = content.content # base64
+            logger.debug("Getting file %s", content.path)
     return files
 
 def decode_files(files):
@@ -37,15 +42,35 @@ def decode_files(files):
     dict: A dictionary similar to the input but with all file contents decoded 
     from base64 to UTF-8 strings.
     """
+    # TODO: Convert this into a parameter and let user specify when parsing is added.
+    ext_to_ignore = [".DS_Store", ".pdf", ".ipynb", ".csv", ".zip", ".pptx", ".jpg", ".jpeg",".png"]
     decoded_files = {}
+    ignored_files = []
     for path, content in files.items():
+        
         if isinstance(content, dict):
             # Recursively decode nested dictionaries
-            decoded_files[path] = decode_files(content)
+            decoded_files[path], ignored_files = decode_files(content)
         else:
-            # Decode the base64-encoded content
-            decoded_files[path] = base64.b64decode(content.encode('utf-8')).decode('utf-8')
-    return decoded_files
+            logger.debug("Path to decode: %s", path)
+            # Check if the extension should be ignored.
+            extension = re.findall("\.[^.]+$", path)
+            try:
+                extension = extension[0]
+            except:
+                extension = ""
+            logger.debug("File extension: %s", extension)
+
+            if extension in ext_to_ignore:
+                ignored_files.append(path)
+                logger.debug("Ignoring file %s", path)
+                continue
+            else:
+                # Decode the base64-encoded content
+                decoded_files[path] = base64.b64decode(content.encode('utf-8')).decode('utf-8')
+                logger.info("Decoding file %s", path)
+
+    return decoded_files, ignored_files
 
 def flatten(dictionary, parent_key='', separator='_'):
     """

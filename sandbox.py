@@ -37,17 +37,27 @@ if __name__ == "__main__":
         g = Github(GITHUB_API_TOKEN)
         repo = g.get_repo(repo_name)
         logger.debug(repo.get_topics())
-        logger.info("Retriving data from %s ...", repo.full_name)
+        logger.info("Retriving data from %s. This process might take time ...", repo.full_name)
         contents = repo.get_contents("")
         all_files = gu.get_all_files(repo)
         logger.debug(all_files)
 
         # --- Decode files ---
-        logger.info("Decoding files in repo...")
-        decoded_files = gu.decode_files(all_files)
-        logger.info("Files decoded. Proceeding to flatten dictionary.")
-        decoded_files_flatten = gu.flatten(decoded_files)
-        logger.info("Files flattened")
+        # Flatten dictionary
+        logger.info("Flattening dictionary...")
+        flatten_files = gu.flatten(all_files)
+        # Decode files (omit pdf, ipynb, csv, zip, pptx, images)
+        logger.info("Dictionary flattened. Proceeding to decode files.")
+        decoded_files, ignored_files = gu.decode_files(flatten_files)
+
+        # Log decoded and omitted files.
+        logger.info("Finished decoding files.")
+        logger.info("   Files decoded:")
+        for path in decoded_files.keys():
+            logger.info("      - %s", path)
+        logger.info("   Files ignored:")
+        for file in ignored_files:
+            logger.info("      - %s", file)
 
         # --- Create README file ---
         logger.info("Creating AI_README.md file...")
@@ -56,13 +66,13 @@ if __name__ == "__main__":
         logger.info("AI_README.md file successfully created.")
 
         # --- Custom loader ---
-        custom_loader = au.CustomCodeLoader(decoded_files_flatten)
+        custom_loader = au.CustomCodeLoader(decoded_files)
         logger.info("Custom loader for files created.")
         documents = list(custom_loader.load())
         logger.info("Repo files loaded.")
 
         # --- Summary of files --- 
-        logger.info("Extracting summary of files in repo...")
+        logger.info("Extracting summary of files in repo. This process might take time...")
         file_summaries = au.get_file_summaries(documents, OPEN_API_TOKEN)
         logger.info("Summary of files in repo extracted.")
 
@@ -77,9 +87,10 @@ if __name__ == "__main__":
             f.write(f"{answer}\n\n")
         logger.info("Repo overview written to readme file.") 
         
-        # --- Get repo structure --- 
+        # --- Get repo structure from full list of paths --- 
         logger.info("Extracting repo structure ...")
-        answer = au.get_repo_structure(documents, OPEN_API_TOKEN)
+        all_paths = [key for key in flatten_files.keys()]
+        answer = au.get_repo_structure(all_paths, OPEN_API_TOKEN)
         logger.info("Repo structure extracted.")
 
         with open("AI_README.md","a") as f:
@@ -89,9 +100,15 @@ if __name__ == "__main__":
 
         # --- Getting started instructions --- 
         logger.info("Extracting repo getting started instructions ...")
-        answer = au.getting_started(repo_name, documents, OPEN_API_TOKEN)
-        logger.info("Repo getting started instructions extracted.")
-
+        try:
+            answer = au.getting_started(repo_name, documents, OPEN_API_TOKEN)
+            logger.info("Repo getting started instructions extracted.")
+        except:
+            answer = au.cloning_instructions(repo_name, 
+                                             [doc["metadata"]["path"] for doc in documents], 
+                                             OPEN_API_TOKEN)
+            logger.info("Repo is too long to extract detailed instructions. Parsing not implemented yet. Returning cloning instructions only")
+        
         with open("AI_README.md","a") as f:
             f.write("## Getting started\n\n")
             f.write(f"{answer}\n\n")
@@ -102,7 +119,9 @@ if __name__ == "__main__":
         #logger.info("Summary of files in repo extracted.")
 
         with open("AI_README.md","a") as f:
-            f.write("## File description \n\n")
+            f.write("## File descriptions \n\n")
+            if ignored_files!=[]:
+                f.write('**NOTE:** Code parsing is not implemented yet. Files with extentions *".DS_Store", ".pdf", ".ipynb", ".csv", ".zip", ".pptx", ".jpg", ".jpeg",".png"* will be ommited.\n\n')
             #for a in answer: 
             for a in file_summaries:
                 f.write(f"{a}\n\n")
