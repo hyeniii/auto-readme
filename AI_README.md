@@ -1,106 +1,250 @@
-# AlejandraLLI/auto-readme-toytest 
+# AlejandraLLI/Cloud_Engineering_Project 
 
 ## Overview
 
-This project is a script that generates a README file for a specified GitHub repository. It uses modules such as `aiohttp`, `PyGithub`, and `requests` to interact with the GitHub API. The script sets up logging using a configuration file and retrieves content from the repository. It then decodes the repository files, creates a README file, extracts an overview of the repository, extracts the repository structure, provides getting started instructions, and includes summaries of the files in the repository. The project also includes utility files such as `ai_outputparsers.py`, which contains classes to parse and format the output of a language model, and `github_utils.py`, which contains functions to work with GitHub repositories.
+The Cloud Engineering Final Project focuses on predicting airline prices using a pipeline. The project utilizes various tools and technologies such as Flask, Streamlit, Docker, pandas, scikit-learn, xgboost, AWS S3, and AWS EC2. The pipeline consists of steps like data ingestion, data cleaning, feature generation, model training, and evaluation. The Flask application serves a trained model as a RESTful API, while Streamlit provides the app interface. The project also includes configuration files for logging and web application settings, as well as Dockerfiles for building containers. The pipeline can be run locally or in AWS, with artifacts stored in an S3 bucket. Overall, the project aims to provide a solution for predicting airline prices using a well-defined pipeline and user-friendly app interface.
 
 ## Repo Structure
 
 ```
 .
+├── .github
+│   └── workflows
+│       └── main.yaml
 ├── .gitignore
-├── LICENSE
-├── config
-│   └── logs
-│       └── local.conf
-├── requirements.txt
-├── sandbox.py
-└── src
-    ├── __init__.py
-    ├── ai_outputparsers.py
-    ├── ai_utils.py
-    └── github_utils.py
+├── 00_Administrative
+│   └── Meeting_Minutes.md
+├── 00_Archive
+│   ├── Generate_Raw_Data.ipynb
+│   └── emptyfile
+├── 01_Literature
+├── 02_Data
+│   ├── clean_data.csv
+│   ├── clean_data.zip
+│   ├── emptyfile
+│   └── source_data.zip
+├── 03_Img
+│   └── ArchitectureDiagram.png
+├── 04_Implementation
+│   ├── app
+│   │   ├── README.md
+│   │   ├── config
+│   │   │   ├── logging
+│   │   │   │   └── webapp_log.yaml
+│   │   │   └── webapp.yaml
+│   │   ├── dockerfiles
+│   │   │   └── Dockerfile
+│   │   ├── plane.jpg
+│   │   ├── requirements.txt
+│   │   └── src
+│   │       ├── aggregate_data.py
+│   │       ├── predict_api.py
+│   │       ├── webapp.py
+│   │       └── test.py
+│   └── pipeline
+│       ├── README.md
+│       ├── config
+│       │   ├── default-config.yaml
+│       │   └── logging
+│       │       └── local.conf
+│       ├── dockerfiles
+│       │   ├── Dockerfile.pipeline_main
+│       │   └── Dockerfile.tests
+│       ├── notebooks
+│       │   ├── Clean_Data.ipynb
+│       │   ├── EDA.ipynb
+│       │   └── Modeling.ipynb
+│       ├── pipeline.py
+│       ├── requirements_main.txt
+│       ├── requirements_tests.txt
+│       └── src
+│           ├── __init__.py
+│           ├── aws_utils.py
+│           ├── clean_data.py
+│           ├── generate_features.py
+│           ├── raw_data.py
+│           └── train_model.py
+│               ├── tests
+│               │   ├── __init__.py
+│               │   ├── test_clean_data.py
+│               │   ├── test_generate_features.py
+│               │   └── test_train_model.py
+└── 05_Deliverables
+    ├── AppDemo.mp4
+    └── Final Presentation.pptx
+
 ```
 
 ## Getting started
 
-To get started with the **AlejandraLLI/auto-readme-toytest** repository, follow these steps:
+To clone the repository and install dependencies for the Cloud_Engineering_Project, follow these steps:
 
-**Cloning the Repository:**
 1. Open your terminal or command prompt.
-2. Navigate to the directory where you want to clone the repository.
-3. Run the following command to clone the repository:
+
+2. Navigate to the directory where you want to clone the repository. For example, if you want to clone it to your desktop, run the following command:
    ```
-   git clone https://github.com/AlejandraLLI/auto-readme-toytest.git
+   cd Desktop
    ```
-4. The repository will be cloned to your local machine.
 
-**Installing Dependencies:**
-1. Make sure you have Python installed on your machine.
-2. Open your terminal or command prompt.
-3. Navigate to the cloned repository's directory.
-4. Run the following command to install the dependencies:
+3. Clone the repository by running the following command:
    ```
-   pip install -r requirements.txt
+   git clone https://github.com/AlejandraLLI/Cloud_Engineering_Project.git
    ```
-5. The required dependencies will be installed.
 
-**Special Credentials:**
-1. You need to set up the following environment variables:
-   - GITHUB_API_TOKEN: This token is required to access the GitHub API. Please obtain a personal access token from GitHub and assign it to this environment variable.
-   - OPENAI_API_TOKEN: This token is required to access the OpenAI API. Please obtain an API key from OpenAI and assign it to this environment variable.
+4. Once the cloning process is complete, navigate into the cloned repository by running the following command:
+   ```
+   cd Cloud_Engineering_Project
+   ```
 
-Note: Ensure that the `.env` file is present in the repository directory and contains the required environment variables with their respective values.
+5. Install the dependencies by running the following command:
+   ```
+   pip install -r 04_Implementation/app/requirements.txt
+   ```
 
-Now you are ready to use the repository. You can explore the code files and run the `sandbox.py` file to execute the functionality provided by the repository.
+6. NOTE: The Github repo is too long to give more detailed instructions. Parsing of code is not implemented yet.
 
-## File description 
+Please let me know if you have any further questions or issues.
 
-**.gitignore** 
+## File descriptions 
 
-This file specifies the content that should be ignored by Git when tracking changes in a repository. The content in this .gitignore file includes: 
-- .env files
-- .venv/ directory
-- .vscode/ directory
-- .log files
-- .pyc files
-- tokens/ directory
+**NOTE:** Code parsing is not implemented yet. Files with extentions *".DS_Store", ".pdf", ".ipynb", ".csv", ".zip", ".pptx", ".jpg", ".jpeg",".png"* will be ommited.
 
-**LICENSE** 
+**00_Administrative/Meeting_Minutes.md** 
 
-The file LICENSE contains the MIT License, which grants permission to any person obtaining a copy of the software to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. The license also includes a warranty disclaimer and limitations of liability.
+- The meeting on May 25th, 2023 discussed updating the API to the final version and changing the pipeline to save 3 models to S3 directly. It was also mentioned that images of the architecture and cost are needed for the draft of the ppt. Tasks for the following Saturday include saving the 3 models to S3 bucket, ensuring containers work with changes, drafting the ppt, and reviewing project requirements.
+- The meeting on May 18th, 2023 discussed uploading artifacts to the S3 bucket, the readiness of containers for the pipeline and tests, and the need to improve tests and the API. Tasks for the following week include fixing AWS readings, adding more tests for feature generation, saving more models, adding a drop-down for model prediction in the API, adding more models to the endpoint, starting the drafting of the presentation, and trying to deploy the API in AWS.
+- The meeting on May 11th, 2023 discussed updating raw_data and clean_data to read data from and upload to S3 bucket, adding tests for the clean_data module, and the readiness of modules for generating features and modeling. Tasks for the following week include removing the profile_name option in AWS functions, completing the development of features and training, cost estimation, updating the API, showing progress to Ashish, building a Docker container for the pipeline, and starting the report and presentation.
+- The meeting on May 4th, 2023 discussed the correctness of the diagram, the need to fix zip downloading, the evaluation of models, and the development of the API in Flask. Tasks for the following week include building a function to upload to S3, building source modules for generating features and modeling, cost estimation, building the app interface, setting up API endpoint on EC2.
+- The meeting on April 26th, 2023 discussed data cleaning, the diagram, and various questions related to the project. Tasks for the following week include converting cleaning to a Python script, creating a second version of the diagram, uploading clean data to the S3 bucket, building ML models, and starting to build the API.
+- The meeting on April 19th, 2023 discussed reviewing EDA and tasks for the following week include getting a raw and clean version of the original data set, creating an architecture diagram, creating AWS accounts and profiles, and learning about pipe implementation and automation in AWS.
+- The meeting on April 13th, 2023 discussed project options and decided to use the flight prices problem. Tasks for the following week include drafting the cloud architecture and starting code for data ingestion and cleaning.
+- The meeting on April 6th, 2023 discussed various data options for the project. The tasks for the following week include checking the 4 data set options for Cloud Engineering.
 
-**config/logs/local.conf** 
+**00_Archive/emptyfile** 
 
-This configuration file defines the logging settings for the application. It specifies the loggers, handlers, and formatters to be used. The loggers section specifies two loggers: root and src. The handlers section defines two handlers: consoleHandler and fileHandler. The formatters section defines one formatter: sampleFormatter. The logger_root and logger_src sections specify the level, handlers, and propagate settings for the respective loggers. The handler_consoleHandler section specifies the class, level, formatter, and arguments for the consoleHandler. The handler_fileHandler section specifies the class, level, formatter, and arguments for the fileHandler. The formatter_sampleFormatter section defines the format and date format for the sampleFormatter.
+The file 00_Archive/emptyfile is empty.
 
-**requirements.txt** 
+**01_Literature/emptyfile** 
 
-This file contains a list of Python package requirements for a project. The packages include aiohttp, aiosignal, async-timeout, attrs, certifi, cffi, charset-normalizer, cryptography, Deprecated, frozenlist, idna, multidict, openai, pycparser, PyGithub, PyJWT, PyNaCl, python-dateutil, python-dotenv, requests, six, tqdm, typing_extensions, urllib3, and wrapt.
+This file is empty.
 
-**sandbox.py** 
+**02_Data/emptyfile** 
 
-This file is a script that generates a README file for a specified GitHub repository. It imports necessary modules, sets up logging, and retrieves content from the repository. It then decodes the repository files, creates a README file, extracts an overview of the repository, extracts the repository structure, provides getting started instructions, and includes summaries of the files in the repository.
+This file is empty.
 
-**src/__init__.py** 
+**04_Implementation/app/README.md** 
 
-This file is the initialization file for the src module. It is commonly used to define any necessary setup or configuration for the module.
+This README file provides an overview of the Cloud_Engineering Final Project, which is focused on predicting airline prices using a pipeline. It includes information about the project's description, cloning the repository, running the application locally, and running the Docker container. The project utilizes a Flask application to serve a trained model as a RESTful API and uses Streamlit for the app interface. Instructions are provided for cloning the repository, running the application locally, and running the Docker container.
 
-**src/ai_outputparsers.py** 
+**04_Implementation/app/config/logging/webapp_log.yaml** 
 
-The file contains three classes: FormattedOutputConvertToText, MarkdownTreeStructureOutputParser, and FormattedOutputParserSummary. 
+This file is a YAML configuration file for logging in a web application. It specifies the version, handlers, formatters, loggers, and root level settings for logging. The handlers section defines a stream handler that logs to the standard output. The formatters section defines a formatter with a specific format and date format. The loggers section defines two loggers, one for the webapp with a debug level and the other for aggregate data with a debug level. The propagate setting is set to False for both loggers. The root section sets the debug level and uses the stream handler for logging.
 
-The FormattedOutputConvertToText class parses and formats the output of a language model as a simple string. 
+**04_Implementation/app/config/webapp.yaml** 
 
-The MarkdownTreeStructureOutputParser class parses and formats the output of a language model to represent a repository structure in Markdown. It splits the text into lines, each representing a file path, and organizes the paths into a tree structure. Finally, it formats the tree structure for Markdown output. 
+This file contains the configuration settings for a web application. It includes the image path, flask URL, message header, and various input options such as airline, departure time, origin, and destination. It also includes AWS settings for a bucket name and prefix.
 
-The FormattedOutputParserSummary class parses and formats the output of a language model to highlight file paths and their summaries. It assumes the text format is "File Path: {file_path} Summary: {summary}". It extracts the file path and summary from the text and formats them as a bold file path and a paragraph summary.
+**04_Implementation/app/dockerfiles/Dockerfile** 
 
-**src/ai_utils.py** 
+This Dockerfile sets up a Python 3.10.9-slim environment and installs the required dependencies listed in requirements.txt. It also copies the config, src, and plane.jpg files into the /app directory. The application is exposed on port 80 and the command "streamlit run --server.port=80 --server.fileWatcherType=none src/webapp.py" is executed when the container is run.
 
-This file contains a class called CustomCodeLoader which is a subclass of BaseLoader. It also includes several functions such as get_language_from_extension, load, get_repo_overview, get_repo_structure, getting_started, and get_file_summaries.
+**04_Implementation/app/requirements.txt** 
 
-**src/github_utils.py** 
+This file contains the list of dependencies required for the application. The dependencies include libraries such as Flask, pandas, scikit-learn, and xgboost, among others.
 
-This file contains functions to work with GitHub repositories. It includes functions to get all files from a repository, decode base64-encoded file contents, and flatten nested dictionaries.
+**04_Implementation/app/src/aggregate_data.py** 
+
+This file contains functions to aggregate data from a pandas dataframe. The functions include retrieving flight numbers for a given airline, finding the average duration of a flight for a given airline, origin, and destination, and finding the most likely arrival time for a given airline, origin, destination, and departure time. The functions also include error handling for invalid input values.
+
+**04_Implementation/app/src/predict_api.py** 
+
+This file provides an API endpoint for making predictions using a trained model. It loads models into memory when the Flask app starts and includes a route for making predictions.
+
+**04_Implementation/app/src/webapp.py** 
+
+This file is a Python script that contains the code for a web application. It imports various libraries and modules, sets up the page configuration, and defines functions for user inputs and predictions. The file also connects to AWS S3, loads a configuration file, and retrieves data from the S3 bucket. Finally, it makes requests to a Flask API to get predictions for flight prices based on user inputs.
+
+**04_Implementation/app/test.py** 
+
+This file contains a Python script that makes a POST request to an API endpoint and receives a JSON response. It defines the API endpoint URL and sample input data. It then sends a POST request using the requests library and checks if the request was successful. It retrieves the predicted price from the JSON response and prints it. It also handles exceptions for invalid JSON response and missing key in the response. Finally, it handles exceptions for a failed request.
+
+**04_Implementation/pipeline/README.md** 
+
+This README file provides an overview of the Cloud Engineering Final Project, which focuses on predicting airline prices using a pipeline. The project is developed by Alejandra Lelo de Larrea Ibarra, Bannasorn Paspanthong, Ruben Nakano, and Samuel Swain. The pipeline consists of several steps, including reading and concatenating multiple CSV files, cleaning and normalizing the data, generating features, and training different machine learning models. The parameters for running the pipeline are set in the default-config.yaml file, and artifacts and logs are saved to the artifacts and logging folders, respectively. The README also includes instructions for cloning the repository, running the pipeline locally, and running the pipeline using Docker containers. Finally, the AWS implementation of the pipeline is discussed, with artifacts stored in an S3 bucket.
+
+**04_Implementation/pipeline/config/default-config.yaml** 
+
+This file contains the default configuration for the airline price prediction pipeline in AWS. It includes information such as the name, author, version, description, dependencies, data source, and output location. It also specifies the AWS configuration for uploading data, the raw data file keys, the clean data configuration, the feature generation configuration, and the model training configuration.
+
+**04_Implementation/pipeline/config/logging/local.conf** 
+
+This file contains the configuration for logging in the pipeline. It defines loggers, handlers, and formatters. The loggers specify the level and handlers for each logger. The handlers specify the class, level, formatter, and arguments for each handler. The formatter specifies the format and date format for the log messages.
+
+**04_Implementation/pipeline/dockerfiles/Dockerfile.pipeline_main** 
+
+This Dockerfile sets up a Python 3.9-slim base image and creates a working directory in the container. It copies the requirements_main.txt file and installs the required libraries. It then copies the config, src, and pipeline.py files to run the pipeline. The command to run when running the Docker container is "python pipeline.py".
+
+**04_Implementation/pipeline/dockerfiles/Dockerfile.tests Summary: This Dockerfile is used to build a Docker container for running tests in a pipeline. It sets the base image to python:3.9-slim and creates a working directory in the container. The requirements_tests.txt file is copied to the working directory and the libraries specified in the file are installed. The necessary folders and files for running the pipeline, including clean_data.py, generate_features.py, aws_utils.py, train_model.py, and the tests folder, are also copied. Finally, the command "pytest tests" is set to run when the Docker container is started.** 
+
+
+
+**04_Implementation/pipeline/pipeline.py** 
+
+This script orchestrates the entire pipeline for an airline price prediction project. It calls modules that perform the following steps: download raw data from S3 and save it locally, clean the raw data and save it locally, generate features from the cleaned data, train models using the generated features, evaluate the trained models and save the results locally, and upload all artifacts to S3. The pipeline can be configured using the file called 'default-config.yaml'.
+
+**04_Implementation/pipeline/requirements_main.txt** 
+
+This file contains a list of Python packages with their respective versions that are required for the pipeline. The packages include joblib, numpy, pandas, pandas-stubs, scikit-learn, scipy, boto3, matplotlib, PyYAML, Requests, types-requests, typing_extensions, xgboost, pytest, and pytest-cov. These packages have specific version requirements that are compatible with Python versions between 3.9 and 4.0.
+
+**04_Implementation/pipeline/requirements_tests.txt** 
+
+This file contains a list of required packages and their versions for testing the pipeline implementation. The packages include joblib, numpy, pandas, pandas-stubs, scikit-learn, scipy, boto3, matplotlib, PyYAML, Requests, types-requests, typing_extensions, xgboost, pytest-cov, pytest, pytest-mock, and mock.
+
+**04_Implementation/pipeline/src/__init__.py** 
+
+This file is an initialization file for the pipeline module.
+
+**04_Implementation/pipeline/src/aws_utils.py** 
+
+This file contains functions for uploading and retrieving files from an AWS S3 bucket. The functions include get_data_s3(), which retrieves a file from an S3 bucket, upload_artifacts(), which uploads all artifacts in a specified directory to an S3 bucket, and write_list_files(), which writes a list of S3 URIs of uploaded files to a local file.
+
+**04_Implementation/pipeline/src/clean_data.py** 
+
+This file contains functions for cleaning raw data by applying different transformations. It includes functions to extract the duration of an event in hours from a given string, extract the number of stops from a string using a regular expression pattern, map a given time to a specific hour bucket, clean and transform a raw data pandas DataFrame according to a provided configuration, and convert prices to numeric. The file also includes a function to create a cleaned pandas DataFrame.
+
+**04_Implementation/pipeline/src/generate_features.py** 
+
+This module provides functions for generating features from the cleaned data set.
+
+**04_Implementation/pipeline/src/raw_data.py** 
+
+This file provides functions for reading the original data sources and creating a raw data frame. It includes a function for reading multiple csv files from a zip file stored in an AWS S3 bucket, concatenating them into a single DataFrame, and returning it. It also includes a function for saving a dataframe as a csv file to a specified path.
+
+**04_Implementation/pipeline/src/train_model.py** 
+
+This module provides functions for training and evaluating models.
+
+**04_Implementation/pipeline/tests/__init__.py** 
+
+This file is an initialization file for the tests directory in the pipeline module.
+
+**04_Implementation/pipeline/tests/test_clean_data.py** 
+
+This file contains test cases for the clean_data module. It includes happy path tests and unhappy path tests for functions such as get_duration, get_stops, and bucket_hours.
+
+**04_Implementation/pipeline/tests/test_generate_features.py** 
+
+This file contains test cases for the functions log_transform, drop_columns, and filter_airlines in the src.generate_features module. The log_transform function is tested with both happy and unhappy paths, checking if the columns 'A' and 'B' are correctly transformed using the np.log function. The drop_columns function is also tested with happy and unhappy paths, checking if the 'A' column is dropped and if the 'B' column is still present. The filter_airlines function is tested with happy and unhappy paths, checking if the 'B' airline is correctly filtered out and if an empty DataFrame is returned. Additionally, an unhappy path test is included for the case where the 'airline' column is missing in the DataFrame.
+
+**04_Implementation/pipeline/tests/test_train_model.py** 
+
+This file contains test functions for the train_model module. It imports various libraries for testing, defines sample test data and configuration, and includes test functions for defining a preprocessor, training a model, and calculating metrics.
+
+**05_Deliverables/AppDemo.mp4** 
+
+The file contains a demonstration video of the application.
+
+**README.md** 
+
+This file provides an overview of the Cloud Engineering Final Project, which focuses on predicting airline prices. It includes information on the business problem, data description, data science project, pipeline, web application, and project structure.
 
