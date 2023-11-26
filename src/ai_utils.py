@@ -3,6 +3,10 @@ from langchain.document_loaders.base import BaseLoader
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import ChatPromptTemplate
 import src.ai_outputparsers as parsers
+import logging
+
+# set logger
+logger = logging.getLogger(__name__)
 
 class CustomCodeLoader(BaseLoader):
     """
@@ -126,7 +130,8 @@ def get_repo_structure(documents, openai_api_key):
     ])
 
     chain = chat_prompt | ChatOpenAI(openai_api_key=openai_api_key) | parsers.MarkdownTreeStructureOutputParser()
-    answer = chain.invoke({"list_of_paths": [document["metadata"]["path"] for document in documents]})
+    #answer = chain.invoke({"list_of_paths": [document["metadata"]["path"] for document in documents]})
+    answer = chain.invoke({"list_of_paths": documents})
 
     return(answer)
 
@@ -172,6 +177,41 @@ def getting_started(repo_name, documents, openai_api_key):
 
     return answer
 
+def cloning_instructions(repo_name, paths, openai_api_key):
+    """
+    Provides instructions for cloning a GitHub repository to get started.
+
+    Parameters:
+    - repo_name (str): The name of the repository.
+    - paths (list): A list of documents representing the contents of the repository.
+    - openai_api_key (str): The API key for OpenAI's GPT model.
+
+    Returns:
+    str: Instructions for cloning the repository.
+    """
+
+    template = """
+    You are a helpful assistant who helps built a README file for a Github repository. 
+    Give me instructions on how to clone the repository and install dependencies. After your
+    reponse append this text 'NOTE: The Github repo is too long to give more detailed instructions. 
+    Parsing of code is not implemented yet.' 
+    """
+
+    human_template = """
+    Repo Name: {repo}. 
+    List of files: {file_paths}. 
+    """
+
+    chat_prompt = ChatPromptTemplate.from_messages([
+        ("system", template),
+        ("human", human_template),
+    ])
+
+    chain = chat_prompt | ChatOpenAI(openai_api_key = openai_api_key) | parsers.FormattedOutputConvertToText()
+    answer = chain.invoke({"repo": repo_name, "file_paths": paths})
+
+    return answer
+
 
 def get_file_summaries(documents, openai_api_key):
     """
@@ -186,7 +226,7 @@ def get_file_summaries(documents, openai_api_key):
     """
     
     template = """
-    You are a helpful assistant who generates summarizations of code to build a README file. 
+    You are a helpful assistant who generates summarizations of files to build a README file. 
     Return your response in the format File Path: the_file_path Summary: the_summary
     """
     human_template = "The file {path} has this content: {content}"
@@ -206,8 +246,13 @@ def get_file_summaries(documents, openai_api_key):
         path = document["metadata"]["path"]
         content = document["page_content"]
 
-        # Invoke the chain for each document
-        response = chain.invoke({"path": path, "content": content})
+        if path in [".DS_Store", ".gitignore", ".github/workflows/main.yaml"]:
+            logger.info("Skipping summarization of file %s", path)
+            continue
+        else:
+            logger.info("Summarizing file %s", path)
+            # Invoke the chain for each document
+            response = chain.invoke({"path": path, "content": content})
 
         # Append the generated summary to the summaries list
         summaries.append(response)
